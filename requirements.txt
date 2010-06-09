@@ -1,0 +1,4 @@
+fabric
+
+-e git://github.com/jbalogh/django-nose.git@6f060d49ee193a05734704820f3fea92ee1759d2#egg=django-nose
+-e svn+http://code.djangoproject.com/svn/django/trunk@12335#egg=Django
