@@ -17,12 +17,14 @@ class TpgTransaction:
             'card_exp_date': None,
             'cardholder_street_address': None,
             'cardholder_zip': None,
+            'currency_code': None,
             'invoice_number': None,
 
             'transaction_amount': None,
 
             # D=Sale, V=Void, U=Refund, G=Forex (undocumented!)
             'transaction_type': None,
+
         }
 
     def __init__(self, data, *args, **kwargs):
@@ -41,8 +43,8 @@ class TpgTransaction:
             # TODO
             pass
 
-        #TODO Strip out empty fields
-        f = self.request_fields
+        #Strip out empty fields.  Should just be using a list as a class var anyway.
+        f = dict((k,v) for k,v in self.request_fields.iteritems() if v is not None)
 
         f.update({'profile_id': settings.E_COMMERCE['profile_id'],
                   'profile_key': settings.E_COMMERCE['profile_key']})
@@ -50,12 +52,7 @@ class TpgTransaction:
         params = urllib.urlencode(f)
         r = urllib.urlopen("%s?%s" % (settings.E_COMMERCE['api_host'], params)).read()
 
-        response = urlparse.parse_qs(r)
-
-        if response['error_code'][0] == "000":
-            return True
-        else:
-            return False
+        return urlparse.parse_qs(r)
 
 
     def validate(self):
@@ -75,3 +72,9 @@ class TpgVoid(TpgTransaction):
     pass
 
 
+class TpgCurrency(TpgTransaction):
+    """Convert currencies
+    TODO: I added this in after the TpgTransaction stuff, but it all should be
+    refactored
+    """
+    pass
